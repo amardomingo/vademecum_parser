@@ -1,0 +1,33 @@
+{
+	"properties": {
+		"label": {
+			"valueType": "skos:prefLabel"
+		},
+		"topic": {
+			"valueType": "sioc:topic"
+		},
+		"resource": {
+			"valueType": "sioc:uri"
+		},
+		"content": {
+			"valueType": "sioc:content"
+		},
+		"links_to": {
+			"valueType": "sioc:links_to"
+		}
+	},
+	"items": [
+		{
+			"label":"for",
+			"topic":"palabra reservada",
+			"resource":"http://web.dit.upm.es/~pepe/libros/vademecum/topics/138.html",
+			"content":"Los bucles for se ejecutan un numero determinado de veces.",
+			"example":"for (inicializacion; condicion; actualizacion) accion; for (inicializacion; condicion; actualizacion) { accion 1; accion 2; ... accion ...; }",
+			"links_to":[
+					 {"label":"while"},
+				     {"label":"do-while"},
+					 {"label":"bucles"} 
+					]
+		}
+	]
+}
