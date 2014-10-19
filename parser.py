@@ -139,7 +139,7 @@ def replace_links_with_labels(data):
             values['links_to'] = newlinks
         else:
             # If there is no "links to", since its a mandatory field (curses!), generic filler
-            values['links_to'] = {'label': 'otros conceptos'}
+            values['links_to'] = [{'label': 'otros conceptos'}]
         
         result.append(values)
     
