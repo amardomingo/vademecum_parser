@@ -5,7 +5,7 @@ rm -f vademecum.json vademecum_encoded.json dictionary.*
 echo " done!"
 
 echo -n "Getting the data..."
-python parser.py >/dev/null
+python parser.py >parser.log
 echo " done!"
 
 echo -n "Encoding the data... "

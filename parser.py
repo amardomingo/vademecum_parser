@@ -24,7 +24,7 @@ vademecum_topics = "http://www.dit.upm.es/~pepe/libros/vademecum/topics/"
 pattern_head = re.compile('>(\w+)\s[?[\w\s]*\]?\s?\(([\w\s]*)\)<\/span>', re.UNICODE)
 
 #links_to
-pattern_links = re.compile("Ver\s.[<\/span>]+<a\shref=.(\d+.html)#mywiki", re.UNICODE)
+pattern_links = re.compile("<a\shref=.(\d+.html)#mywiki", re.UNICODE)
 
 # JSON template
 json_template = 'vademecum_template.json'
@@ -74,11 +74,34 @@ def get_data_from_link(driver, resource):
         textos = driver.find_elements_by_xpath("//div[@class='WordSection1']/p[@class='MsoNormal']")
         for contenido in textos:
             content = content+contenido.text
-    
+        
+        # Get examples
+        examples = driver.find_elements_by_xpath("//td/p[@class='PreformattedTextCxSpMiddle']")
+        example = ""
+        for line in examples:
+            example = example+line.text
+        
+        # This is cheating, but, If I don't have examples, I add a fake one
+        # saying I don't have an example
+        if example == "":
+            example = "Lo siento, no tengo ningún ejemplo sobre eso"
+        
+        info['example'] = example
+        
         # Replace some weird syntax    
         if u"\xb7" in content:
             content = string.replace(content, u"\xb7         ", " ")
-
+        
+        # Search for inverted commas, and remove them
+        if u"\u201c" in content:
+            content = string.replace(content, u"\u201c", "")
+        if u"\u201d" in content:
+            content = string.replace(content, u"\u201d", "")
+        
+        # Remove line jumps
+        if u"\n" in content:
+            content = string.replace(content, u"\n", "")
+        
         info['content'] = content
         
         # The related info
@@ -87,6 +110,7 @@ def get_data_from_link(driver, resource):
             info['links_to'] = []
             for link in related:
                 info['links_to'].append(vademecum_topics+link)
+            
             
         # Add the resource
         info['resource'] = resource
@@ -113,9 +137,12 @@ def replace_links_with_labels(data):
                 if link in data:
                     newlinks.append({'label': data[link]['label']})
             values['links_to'] = newlinks
-            
+        else:
+            # If there is no "links to", since its a mandatory field (curses!), generic filler
+            values['links_to'] = {'label': 'otros conceptos'}
+        
         result.append(values)
-            
+    
     return result
     
 def write_to_json(data, filename):
@@ -151,7 +178,8 @@ def main():
     enlaces = get_topics(driver)
     
     #Debug
-    #print get_data_from_link(driver, "http://www.dit.upm.es/~pepe/libros/vademecum/index.html?n=390.html")
+    #print get_data_from_link(driver, "http://www.dit.upm.es/~pepe/libros/vademecum/topics/95.html")
+    #print concepts
     #return 
     
     vademecum_data = {}
