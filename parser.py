@@ -130,15 +130,16 @@ def replace_links_with_labels(data):
     result = []
     for resource, values in data.iteritems():
         
+        newlinks = []
         if 'links_to' in values:
             # Get the labels
-            newlinks = []
             for link in values['links_to']:
                 if link in data:
                     newlinks.append({'label': data[link]['label']})
-            values['links_to'] = newlinks
-        else:
-            # If there is no "links to", since its a mandatory field (curses!), generic filler
+        values['links_to'] = newlinks
+
+        # If the "links to" is still empty, since its a mandatory field (curses!), generic filler
+        if values['links_to'] == []: 
             values['links_to'] = [{'label': 'otros_conceptos'}]
         
         result.append(values)
